@@ -4,65 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>今天吃什么？</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍚</text></svg>">
     <style>
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             min-height: 100vh;
             padding: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
         }
         
         .container {
             background: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 400px;
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
             width: 100%;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
         }
         
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
         
         .subtitle {
+            font-size: 1.1rem;
             opacity: 0.9;
             margin-bottom: 30px;
+        }
+        
+        .mode-selection {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 25px;
             font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            max-width: 150px;
+        }
+        
+        .mode-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+        
+        .mode-btn.active.secondary {
+            background: linear-gradient(45deg, #4ECDC4, #44A08D);
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+        }
+        
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
         }
         
         .btn {
             background: linear-gradient(45deg, #FF6B6B, #FF8E53);
             color: white;
             border: none;
-            padding: 16px 24px;
-            font-size: 1.2rem;
-            border-radius: 25px;
-            margin: 8px 0;
+            padding: 20px 30px;
+            font-size: 1.3rem;
+            border-radius: 50px;
             cursor: pointer;
-            width: 100%;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
             font-weight: 600;
         }
         
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.6);
         }
         
         .btn:active {
@@ -71,68 +113,85 @@
         
         .btn-secondary {
             background: linear-gradient(45deg, #4ECDC4, #44A08D);
-            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
         }
         
         .btn-secondary:hover {
-            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
+            box-shadow: 0 15px 35px rgba(78, 205, 196, 0.6);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result-area {
+            margin: 30px 0;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         #result {
             background: rgba(255, 255, 255, 0.15);
-            padding: 25px 20px;
-            margin: 25px 0;
-            border-radius: 15px;
-            font-size: 1.4rem;
-            min-height: 140px;
+            border-radius: 20px;
+            padding: 30px 25px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            line-height: 1.4;
+            min-height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
         
-        .recommend-text {
-            font-size: 1.2rem;
+        .recommendation-text {
+            font-size: 1.4rem;
             opacity: 0.9;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         
         .food-name {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             color: #FFD166;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        
-        .date {
-            font-size: 0.9rem;
-            opacity: 0.7;
-            margin-top: 5px;
+            text-shadow: 0 2px 10px rgba(255, 209, 102, 0.5);
         }
         
         #menu {
-            display: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
             text-align: left;
-            margin-top: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: none;
         }
         
         .menu-title {
-            text-align: center;
-            font-weight: bold;
+            font-size: 1.3rem;
             margin-bottom: 15px;
-            font-size: 1.2rem;
+            text-align: center;
             color: #FFD166;
+            font-weight: bold;
+        }
+        
+        .menu-list {
+            list-style: none;
+            font-size: 1.2rem;
         }
         
         .menu-item {
             padding: 12px 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
         }
         
         .menu-item:last-child {
@@ -141,34 +200,43 @@
         
         .menu-item::before {
             content: '🍽️';
-            margin-right: 10px;
+            margin-right: 12px;
+            font-size: 1.3rem;
         }
         
         .status {
-            margin-top: 15px;
-            font-size: 0.9rem;
+            margin-top: 25px;
+            font-size: 1rem;
             opacity: 0.8;
             min-height: 20px;
         }
         
+        .footer {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            text-align: center;
+        }
+        
+        /* 加载动画 */
         .loading {
             display: inline-block;
             width: 20px;
             height: 20px;
-            border: 2px solid rgba(255,255,255,.3);
+            border: 3px solid rgba(255,255,255,.3);
             border-radius: 50%;
             border-top-color: #fff;
             animation: spin 1s ease-in-out infinite;
-            margin-right: 8px;
         }
         
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
         
+        /* 响应式设计 */
         @media (max-width: 480px) {
             .container {
-                padding: 25px 20px;
+                padding: 30px 20px;
                 margin: 10px;
             }
             
@@ -176,129 +244,333 @@
                 font-size: 2.2rem;
             }
             
+            .mode-btn {
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+            
             .btn {
-                padding: 14px 20px;
+                padding: 18px 25px;
                 font-size: 1.1rem;
             }
             
             #result {
-                font-size: 1.3rem;
-                padding: 20px 15px;
+                font-size: 1.5rem;
+                padding: 25px 20px;
             }
             
             .food-name {
-                font-size: 1.6rem;
+                font-size: 1.8rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🍚 今天吃什么？</h1>
-        <div class="subtitle">选择困难症救星 · 每天不重样</div>
+        <div class="header">
+            <h1>🍚 今天吃什么？</h1>
+            <div class="subtitle">选择困难症救星 · 周一到周四不重样</div>
+        </div>
         
-        <button class="btn" id="recommendBtn">
-            🎲 随机推荐
-        </button>
-        <button class="btn btn-secondary" id="menuBtn">
-            📋 查看菜单
-        </button>
+        <div class="mode-selection">
+            <button class="mode-btn" id="dineInBtn">
+                🏪 堂食
+            </button>
+            <button class="mode-btn" id="deliveryBtn">
+                📦 外卖
+            </button>
+        </div>
         
-        <div id="result">
-            <div>点击上方按钮开始推荐</div>
+        <div class="button-group">
+            <button class="btn" id="recommendBtn" disabled>
+                🎲 随机推荐
+            </button>
+            <button class="btn btn-secondary" id="menuBtn" disabled>
+                📋 查看菜单
+            </button>
+        </div>
+        
+        <div class="result-area">
+            <div id="result">
+                <div>请先选择堂食或外卖</div>
+            </div>
         </div>
         
         <div id="menu">
             <div class="menu-title">完整菜单列表</div>
-            <div id="menuList"></div>
+            <ul class="menu-list" id="menuList">
+                <!-- 菜单项将通过JavaScript动态生成 -->
+            </ul>
         </div>
         
-        <div class="status" id="status">准备就绪</div>
+        <div class="status" id="status">请选择堂食或外卖模式</div>
+        
+        <div class="footer">
+            🍽️ 让选择变得简单 · 周一到周四不重样
+        </div>
     </div>
 
     <script>
         // 菜单数据
-        const foods = [
+        const dineInMenu = [
             "猪蹄牛蛙",
             "米宝贝炒菜", 
             "牛蛙煲鸡公煲",
             "牛肉粉",
-            "烤鸭店",
-            "麦当劳",
-            "肯德基",
-            "披萨"
+            "烤鸭店", 
+            "串串"
+        ];
+        
+        const deliveryMenu = [
+            "胡子大厨",
+            "酸菜鱼",
+            "汉堡",
+            "蛙来哒牛蛙"
         ];
 
-        // 获取页面元素
-        const recommendBtn = document.getElementById('recommendBtn');
-        const menuBtn = document.getElementById('menuBtn');
+        // 获取DOM元素
         const resultEl = document.getElementById('result');
         const menuEl = document.getElementById('menu');
         const menuListEl = document.getElementById('menuList');
         const statusEl = document.getElementById('status');
+        const recommendBtn = document.getElementById('recommendBtn');
+        const menuBtn = document.getElementById('menuBtn');
+        const dineInBtn = document.getElementById('dineInBtn');
+        const deliveryBtn = document.getElementById('deliveryBtn');
 
-        // 随机推荐功能
-        recommendBtn.addEventListener('click', function() {
-            // 显示加载状态
-            const originalText = recommendBtn.innerHTML;
-            recommendBtn.innerHTML = '<div class="loading"></div> 推荐中...';
-            recommendBtn.disabled = true;
-            statusEl.textContent = '正在计算今日推荐...';
+        // 全局变量
+        let currentMode = null; // 'dineIn' 或 'delivery'
+        let currentMenu = [];
+        let weeklyHistory = {
+            dineIn: [],
+            delivery: []
+        };
 
-            // 模拟加载效果
-            setTimeout(() => {
-                // 基于日期生成随机数（确保同一天结果相同）
-                const today = new Date().toDateString();
-                let seed = 0;
-                for (let i = 0; i < today.length; i++) {
-                    seed = ((seed << 5) - seed) + today.charCodeAt(i);
+        // 初始化菜单列表
+        function initMenu() {
+            menuListEl.innerHTML = currentMenu.map(item => 
+                `<li class="menu-item">${item}</li>`
+            ).join('');
+        }
+
+        // 选择堂食或外卖模式
+        function selectMode(mode) {
+            currentMode = mode;
+            
+            // 更新按钮状态
+            dineInBtn.classList.remove('active');
+            deliveryBtn.classList.remove('active');
+            
+            if (mode === 'dineIn') {
+                dineInBtn.classList.add('active');
+                currentMenu = dineInMenu;
+                statusEl.textContent = '已选择堂食模式';
+            } else {
+                deliveryBtn.classList.add('active', 'secondary');
+                currentMenu = deliveryMenu;
+                statusEl.textContent = '已选择外卖模式';
+            }
+            
+            // 启用功能按钮
+            recommendBtn.disabled = false;
+            menuBtn.disabled = false;
+            
+            // 重置结果显示
+            resultEl.innerHTML = '<div>点击"随机推荐"按钮开始</div>';
+            
+            // 隐藏菜单
+            menuEl.style.display = 'none';
+            
+            // 加载历史记录
+            loadWeeklyHistory();
+        }
+
+        // 加载周历史记录
+        function loadWeeklyHistory() {
+            const storedHistory = localStorage.getItem('weeklyFoodHistory');
+            if (storedHistory) {
+                weeklyHistory = JSON.parse(storedHistory);
+                
+                // 检查是否是本周的记录
+                const lastUpdate = localStorage.getItem('weeklyFoodLastUpdate');
+                const currentWeek = getWeekNumber(new Date());
+                
+                if (lastUpdate && parseInt(lastUpdate) === currentWeek) {
+                    statusEl.textContent += ` | 本周已推荐 ${weeklyHistory[currentMode].length} 次`;
+                } else {
+                    // 新的一周，重置历史
+                    weeklyHistory = { dineIn: [], delivery: [] };
+                    saveWeeklyHistory();
+                    statusEl.textContent += ' | 新的一周开始';
                 }
+            } else {
+                weeklyHistory = { dineIn: [], delivery: [] };
+                saveWeeklyHistory();
+            }
+        }
+
+        // 保存周历史记录
+        function saveWeeklyHistory() {
+            localStorage.setItem('weeklyFoodHistory', JSON.stringify(weeklyHistory));
+            localStorage.setItem('weeklyFoodLastUpdate', getWeekNumber(new Date()).toString());
+        }
+
+        // 获取一年中的第几周
+        function getWeekNumber(date) {
+            const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+            const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+            return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+        }
+
+        // 简单的随机种子生成器
+        function createSeededRandom(seed) {
+            return function() {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            };
+        }
+
+        // 随机推荐函数
+        function getRecommendation() {
+            try {
+                const originalText = recommendBtn.innerHTML;
                 
-                // 生成随机索引
-                const randomIndex = Math.abs(seed) % foods.length;
-                const selectedFood = foods[randomIndex];
+                // 显示加载状态
+                recommendBtn.innerHTML = '<div class="loading"></div> 推荐中...';
+                recommendBtn.disabled = true;
                 
-                // 显示推荐结果
-                resultEl.innerHTML = `
-                    <div class="recommend-text">🎉 今天推荐</div>
-                    <div class="food-name">${selectedFood}</div>
-                    <div class="date">${new Date().toLocaleDateString('zh-CN', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric',
-                        weekday: 'long'
-                    })}</div>
-                `;
+                statusEl.textContent = '正在计算今日推荐...';
                 
-                // 更新状态
-                statusEl.textContent = `推荐成功！今日已选择: ${selectedFood}`;
+                // 模拟加载效果
+                setTimeout(() => {
+                    // 获取当前周几 (0-6, 0是周日)
+                    const today = new Date();
+                    const dayOfWeek = today.getDay();
+                    
+                    // 只处理周一到周四 (1-4)
+                    if (dayOfWeek < 1 || dayOfWeek > 4) {
+                        resultEl.innerHTML = `
+                            <div class="recommendation-text">🎉 周末啦！</div>
+                            <div class="food-name">自由选择</div>
+                            <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">
+                                周末不参与随机推荐
+                            </div>
+                        `;
+                        statusEl.textContent = '周末不参与随机推荐，自由选择吧！';
+                        recommendBtn.innerHTML = originalText;
+                        recommendBtn.disabled = false;
+                        return;
+                    }
+                    
+                    // 基于日期和模式的随机种子
+                    const seedString = today.toDateString() + currentMode;
+                    let seed = 0;
+                    for (let i = 0; i < seedString.length; i++) {
+                        seed = ((seed << 5) - seed) + seedString.charCodeAt(i);
+                    }
+                    
+                    const random = createSeededRandom(Math.abs(seed));
+                    
+                    // 获取本周已推荐的菜品
+                    const weeklyUsed = weeklyHistory[currentMode];
+                    
+                    // 找出未使用的菜品
+                    const availableItems = currentMenu.filter(item => !weeklyUsed.includes(item));
+                    
+                    let recommendation;
+                    
+                    if (availableItems.length > 0) {
+                        // 还有未使用的菜品，随机选择一个
+                        const randomIndex = Math.floor(random() * availableItems.length);
+                        recommendation = availableItems[randomIndex];
+                        
+                        // 添加到历史记录
+                        weeklyHistory[currentMode].push(recommendation);
+                        saveWeeklyHistory();
+                    } else {
+                        // 所有菜品都已使用过，随机选择一个
+                        const randomIndex = Math.floor(random() * currentMenu.length);
+                        recommendation = currentMenu[randomIndex];
+                        statusEl.textContent = `本周所有选项都已推荐过，随机选择: ${recommendation}`;
+                    }
+                    
+                    // 显示结果
+                    resultEl.innerHTML = `
+                        <div class="recommendation-text">🎉 今天推荐</div>
+                        <div class="food-name">${recommendation}</div>
+                        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">
+                            ${today.toLocaleDateString('zh-CN')} 周${['日','一','二','三','四','五','六'][dayOfWeek]}
+                        </div>
+                    `;
+                    
+                    // 更新状态
+                    if (availableItems.length > 0) {
+                        statusEl.textContent = `推荐成功！本周已推荐 ${weeklyHistory[currentMode].length} 个不重样菜品`;
+                    }
+                    statusEl.style.color = '#4ECDC4';
+                    
+                    // 恢复按钮状态
+                    recommendBtn.innerHTML = originalText;
+                    recommendBtn.disabled = false;
+                    
+                }, 800);
+                
+            } catch (error) {
+                console.error('推荐失败:', error);
+                resultEl.innerHTML = '❌ 推荐失败，请重试';
+                statusEl.textContent = `错误: ${error.message}`;
+                statusEl.style.color = '#FF6B6B';
                 
                 // 恢复按钮状态
-                recommendBtn.innerHTML = originalText;
+                recommendBtn.innerHTML = '🎲 随机推荐';
                 recommendBtn.disabled = false;
-                
-            }, 800);
-        });
+            }
+        }
 
-        // 显示/隐藏菜单功能
-        menuBtn.addEventListener('click', function() {
+        // 切换菜单显示
+        function toggleMenu() {
             if (menuEl.style.display === 'block') {
                 menuEl.style.display = 'none';
                 statusEl.textContent = '已隐藏菜单';
             } else {
-                // 生成菜单列表
-                menuListEl.innerHTML = foods.map(food => 
-                    `<div class="menu-item">${food}</div>`
-                ).join('');
                 menuEl.style.display = 'block';
-                statusEl.textContent = `显示完整菜单，共 ${foods.length} 个选项`;
+                statusEl.textContent = `显示${currentMode === 'dineIn' ? '堂食' : '外卖'}菜单，共 ${currentMenu.length} 个选项`;
+                // 确保菜单已初始化
+                if (menuListEl.children.length === 0 || 
+                    menuListEl.children.length !== currentMenu.length) {
+                    initMenu();
+                }
             }
+        }
+
+        // 添加事件监听
+        document.addEventListener('DOMContentLoaded', function() {
+            statusEl.textContent = '请选择堂食或外卖模式';
+            
+            // 添加按钮事件
+            dineInBtn.addEventListener('click', () => selectMode('dineIn'));
+            deliveryBtn.addEventListener('click', () => selectMode('delivery'));
+            recommendBtn.addEventListener('click', getRecommendation);
+            menuBtn.addEventListener('click', toggleMenu);
+            
+            console.log('页面初始化完成');
         });
 
-        // 页面加载完成
-        window.addEventListener('load', function() {
-            statusEl.textContent = '页面加载完成，点击按钮开始使用';
-            console.log('今天吃什么服务已就绪！');
+        // 添加键盘快捷键
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Space' && !recommendBtn.disabled) {
+                event.preventDefault();
+                getRecommendation();
+            } else if (event.code === 'KeyM' && !menuBtn.disabled) {
+                event.preventDefault();
+                toggleMenu();
+            } else if (event.code === 'KeyD') {
+                event.preventDefault();
+                selectMode('dineIn');
+            } else if (event.code === 'KeyW') {
+                event.preventDefault();
+                selectMode('delivery');
+            }
         });
     </script>
 </body>
